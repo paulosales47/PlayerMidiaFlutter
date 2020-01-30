@@ -12,8 +12,11 @@ class _HomeState extends State<Home> {
   var _audioPlayer = AudioPlayer();
   var _audiocache = AudioCache(prefix: "audios/");
   bool _primeiraExecucao = true;
+  double _volume = 0.5;
 
   _executar() async{
+    _audioPlayer.setVolume(_volume);
+
     if(_primeiraExecucao){
       _audioPlayer = await _audiocache.play("musica.mp3");
       _primeiraExecucao = false;
@@ -40,7 +43,18 @@ class _HomeState extends State<Home> {
       ),
       body: Column(
         children: <Widget>[
-          //slider
+          Slider(
+            value: _volume,
+            min: 0,
+            max: 1,
+            divisions: 10,
+            onChanged: (volume){
+              setState(() {
+                _volume = volume;
+                _audioPlayer.setVolume(volume);
+              });
+            },
+          ),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
