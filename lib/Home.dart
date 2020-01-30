@@ -9,20 +9,73 @@ class Home extends StatefulWidget {
 
 class _HomeState extends State<Home> {
 
-  _executarAudio() async{
-/*    var player = AudioPlayer();
-    int resultado = await player.play("https://www.soundhelix.com/examples/mp3/SoundHelix-Song-8.mp3");
-    if(resultado == 1){
-    }*/
+  var _audioPlayer = AudioPlayer();
+  var _audiocache = AudioCache(prefix: "audios/");
+  bool _primeiraExecucao = true;
 
-    var audioCache = AudioCache(prefix: "audios/");
-    AudioPlayer audioplayer = await audioCache.play("musica.mp3");
-
+  _executar() async{
+    if(_primeiraExecucao){
+      _audioPlayer = await _audiocache.play("musica.mp3");
+      _primeiraExecucao = false;
+    }
+    else
+      _audioPlayer.resume();
   }
+
+  _pausar() async {
+    int resultado = await _audioPlayer.pause();
+  }
+
+  _parar() async{
+    int resultado = await _audioPlayer.stop();
+  }
+
 
   @override
   Widget build(BuildContext context) {
-    _executarAudio();
-    return Container();
+
+    return Scaffold(
+      appBar: AppBar(
+        title: Text("Executando midias"),
+      ),
+      body: Column(
+        children: <Widget>[
+          //slider
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              Padding(
+                padding: EdgeInsets.all(16),
+                child: GestureDetector(
+                  onTap: (){
+                    _executar();
+                  },
+                  child: Image.asset("assets/images/executar.png"),
+                ),
+              ),
+              Padding(
+                padding: EdgeInsets.all(16),
+                child: GestureDetector(
+                  onTap: (){
+                    _pausar();
+                  },
+                  child: Image.asset("assets/images/pausar.png"),
+                ),
+              ),
+              Padding(
+                padding: EdgeInsets.all(16),
+                child: GestureDetector(
+                  onTap: (){
+                    _parar();
+                  },
+                  child: Image.asset("assets/images/parar.png"),
+                ),
+              ),
+            ],
+          )
+
+        ],
+      ),
+    );
   }
 }
